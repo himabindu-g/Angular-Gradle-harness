@@ -56,11 +56,6 @@ pipeline:
                     mode: orchestration
                     config: default
               - step:
-                  type: Plugin
-                  name: Plugin_1
-                  identifier: Plugin_1
-                  spec: {}
-              - step:
                   type: Run
                   name: Run_1
                   identifier: Run_1
