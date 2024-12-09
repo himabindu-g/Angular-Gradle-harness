@@ -63,8 +63,9 @@ pipeline:
                     shell: Sh
                     command: |-
                       sudo apt update
-                      sudo apt install nodejs
-                      sudo apt install npm
+                      curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+                      sudo apt-get install -y nodejs
+                      node -v
                       npm install -g @angular/cli
                       ng --version
                       ng new my-angular-app
