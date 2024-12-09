@@ -68,17 +68,11 @@ pipeline:
                       node -v
                       npm install -g @angular/cli
                       ng --version
-                      ng new my-angular-app
-                      cd my-angular-app
-                      curl -s "https://get.sdkman.io" | bash
-                      source "$HOME/.sdkman/bin/sdkman-init.sh"
-                      sdk install gradle
+                      sudo apt-get install gradle
                       gradle -v
-                      gradle installNodeModules
-                      gradle buildAngularApp
-                      gradle testAngularApp
-                      gradle lintAngularApp
-                      gradle runAll
+                      ls -la 
+                      cd Angular-Gradle-harness
+                      gradle build
                       task createArtifact(type: Zip) {
                           from 'dist'  // Path to the built Angular files (output from ng build)
                           archiveFileName = 'angular-app.zip'
