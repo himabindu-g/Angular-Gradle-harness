@@ -1,0 +1,88 @@
+pipeline:
+  name: angular-ci-bin
+  identifier: angularcibin
+  projectIdentifier: ORCA_onedev
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: bintestgithub
+        repoName: Angular-Gradle-harness
+        build: <+input>
+  stages:
+    - stage:
+        name: build-gradle
+        identifier: buildgradle
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Gitleaks
+                  name: Gitleaks_1
+                  identifier: Gitleaks_1
+                  spec:
+                    mode: orchestration
+                    config: default
+                    target:
+                      type: repository
+                      detection: auto
+                    advanced:
+                      log:
+                        level: info
+                      fail_on_severity: medium
+                  description: check any gitleaks present code
+              - step:
+                  type: Semgrep
+                  name: Semgrep_1
+                  identifier: Semgrep_1
+                  spec:
+                    target:
+                      detection: auto
+                      type: repository
+                    advanced:
+                      log:
+                        level: info
+                      args: {}
+                    mode: orchestration
+                    config: default
+              - step:
+                  type: Plugin
+                  name: Plugin_1
+                  identifier: Plugin_1
+                  spec: {}
+              - step:
+                  type: Run
+                  name: Run_1
+                  identifier: Run_1
+                  spec:
+                    shell: Sh
+                    command: |-
+                      curl -s "https://get.sdkman.io" | bash
+                      source "$HOME/.sdkman/bin/sdkman-init.sh"
+                      sdk install gradle
+                      gradle -v
+                      gradle init --type java-application
+                      gradle build
+                      gradle jar
+                      gradle run
+                      gradle test jacocoTestReport
+                      cat build/reports/jacoco/test/html/
+                  description: Gradle used as build
+              - step:
+                  type: GCSUpload
+                  name: GCSUpload_1
+                  identifier: GCSUpload_1
+                  spec:
+                    connectorRef: gcpbin2
+                    bucket: harnessbucket
+                    sourcePath: harnessbucket
