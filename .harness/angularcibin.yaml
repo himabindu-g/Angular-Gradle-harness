@@ -62,16 +62,28 @@ pipeline:
                   spec:
                     shell: Sh
                     command: |-
+                      sudo apt update
+                      sudo apt install nodejs
+                      sudo apt install npm
+                      npm install -g @angular/cli
+                      ng --version
+                      ng new my-angular-app
+                      cd my-angular-app
                       curl -s "https://get.sdkman.io" | bash
                       source "$HOME/.sdkman/bin/sdkman-init.sh"
                       sdk install gradle
                       gradle -v
-                      gradle init --type java-application
-                      gradle build
-                      gradle jar
-                      gradle run
-                      gradle test jacocoTestReport
-                      cat build/reports/jacoco/test/html/
+                      gradle installNodeModules
+                      gradle buildAngularApp
+                      gradle testAngularApp
+                      gradle lintAngularApp
+                      gradle runAll
+                      task createArtifact(type: Zip) {
+                          from 'dist'  // Path to the built Angular files (output from ng build)
+                          archiveFileName = 'angular-app.zip'
+                          destinationDirectory = file('build/libs')  // Directory where the artifact will be saved
+                      }
+                      gradle createArtifact
                   description: Gradle used as build
               - step:
                   type: GCSUpload
